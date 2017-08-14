@@ -1,18 +1,14 @@
+import json
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
 
 font = PIL.ImageFont.truetype("Montserrat-Regular.otf", 22)
 
-chars=[]
+chars = dict()
 with open('code_manifest.json','r') as f:
-    content = f.readlines()
-    for line in content[16:7495]:
-        line = line[line.find('"')+1:]
-        key = line[:line.find('"')]
-        if (key[0] == '\\' and len(key) == 6):
-            key = unichr(int(key[2:],16))
-        chars.append(key)
+    content = json.loads(f.read().replace('\n', ' '))['glyphMap']
+    chars= {y:x for x,y in content.iteritems()}
 
 rows=1
 cols=5
@@ -33,7 +29,7 @@ for sheet in range(sheetCount):
     for row in range(rows):
         pos_x = x_start_offset
         for col in range(cols):
-            if (current_char < len(chars)):
+            if (current_char in chars.keys()):
                 draw.text((pos_x, pos_y), chars[current_char], "#FFF", font=font)
             current_char += 1
             if (current_char > 94):
