@@ -12,7 +12,9 @@ python bcfnt.py -cf code.bcfnt
 mkdir romfs
 ./3dstool/bin/Release/3dstool -zvf code.bcfnt --compress-type lzex --compress-out romfs/cbf_std.bcfnt.lz
 ./3dstool/bin/Release/3dstool -cvtf romfs romfs.bin --romfs-dir romfs
-dd bs=4096 skip=1 if=romfs.bin of=00000000.app.romfs
+dd bs=4096 skip=1 if=romfs.bin of=SHARED_FONT_DATA
+xxd -i SHARED_FONT_DATA > shared_font.app.romfs.h
+mv SHARED_FONT_DATA 00000000.app.romfs
 rm -rf 3dstool
 rm -rf romfs
 rm code.bcfnt
