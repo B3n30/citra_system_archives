@@ -3,7 +3,7 @@
 git clone --recursive https://github.com/dnasdw/3dstool
 mkdir 3dstool/build
 cd 3dstool/build
-cmake ..
+cmake -DUSE_DEP=OFF ..
 make
 cd ../..
 cp ignore_3dstool.txt 3dstool/bin/Release/
