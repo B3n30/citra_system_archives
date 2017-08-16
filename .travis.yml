@@ -11,6 +11,7 @@ before_install:
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
 - sudo apt-get install libcurl4-gnutls-dev
 - sudo apt-get install libcurl4-nss-dev
+- sudo apt-get install p7zip p7zip-full p7zip-rar 
 
 install:
 - python --version
