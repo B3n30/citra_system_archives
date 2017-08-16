@@ -30,7 +30,8 @@ deploy:
   api_key:
     secure: UYn9enZoSaxrtLiwPQWejd0P/rSax1bXilEcxr21qZ60Cj+Xazi+Gy2dzmcUZUbOyV+l/SUqoUukiuA/dNbcP/UJJ7J8aG52NsopTi1N6QvmQo2oWQ7SWiTtOj506GTLSFIibu/q2SxLPmcqgzfRSWYGBBhodkC5ySmN501plh5KfKgPYaX5NuVjiBkfG2g4m5pL/34O86i9Iw5ICk6qqT05P6ntukyv61jb4h32g3biXYCarR7i3oeDLYR/T5rRhFD2YWUK5I8HOJdf34dqm4HgBjraRWIiNVqU9j2wCPhyNTpUx9WzoicHJ00pCcFe7j/ggu2SIgLUiA9EYuUcxyqnwdxGBkAOlZDb5bv60hgB/MZgqOgqmmtYpbVFgC8gUgphnkWRMUcDEoUQb8pmUFlFoCAInrSzauphRM2Q3mp2tPEnBGzk/bzPrJoZWhuUJRS1OSd5a3rtUyupqHCxqrgrvRtjyDxmCDe9ZiMSbNgzlX++U24iGTtjFoDT2N5yfqAau7K6Vrq/UFUIFiHiLwwGHnadZQFdbk6iqerBG01rjH5Rhn9Q+Y0Ic2PFhAKyutwTodSxdzkLIr/hI/pYb/7sdEdZb4CUTTCM6K4Ei1Y9SBvx8ddDG1y+APT3yV28whMlIGMaABDDFGGbGaoxdJ2607ZQwj12TO6a43KEd5s=
   file: 
-    - artifacts/system_archives.7z
+    - system_archives.7z
   skip_cleanup: true
   on:
+    tags: true
     repo: B3n30/citra_system_archives
