@@ -14,6 +14,9 @@ python create_png.py
 # Create the bcfnt file
 python bcfnt.py -cf code.bcfnt
 
+# Copy reserved unicode chars
+cp reserved_unicode_chars/* .
+
 # Convert the bcfnt file into a romfs
 mkdir romfs
 ./3dstool/bin/Release/3dstool -zvf code.bcfnt --compress-type lzex --compress-out romfs/cbf_std.bcfnt.lz
