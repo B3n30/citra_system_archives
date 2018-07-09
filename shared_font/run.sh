@@ -25,7 +25,7 @@ dd bs=4096 skip=1 if=romfs.bin of=SHARED_FONT_DATA
 
 # Create a header file to include in citra
 echo -n "// Git Hash: " > shared_font.app.romfs.h
-git git rev-parse HEAD >> shared_font.app.romfs.h
+git rev-parse HEAD >> shared_font.app.romfs.h
 echo "" >> shared_font.app.romfs.h
 xxd -i SHARED_FONT_DATA >> shared_font.app.romfs.h
 mv SHARED_FONT_DATA 00000000.app.romfs

@@ -3,7 +3,8 @@ import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
 
-font = PIL.ImageFont.truetype("Montserrat-Regular.otf", 22)
+#font = PIL.ImageFont.truetype("Anonymous.ttf", 20)
+font = PIL.ImageFont.truetype("Montserrat-Regular.otf", 20)
 
 chars = dict()
 with open('code_manifest.json','r') as f:
