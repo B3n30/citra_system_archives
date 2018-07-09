@@ -11,11 +11,11 @@ cp ignore_3dstool.txt 3dstool/bin/Release/
 # Create the images
 python create_png.py
 
-# Create the bcfnt file
-python bcfnt.py -cf code.bcfnt
-
 # Copy reserved unicode chars
 cp reserved_unicode_chars/* .
+
+# Create the bcfnt file
+python bcfnt.py -cf code.bcfnt
 
 # Convert the bcfnt file into a romfs
 mkdir romfs
