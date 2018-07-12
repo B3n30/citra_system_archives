@@ -22,4 +22,4 @@ cd ..
 # TODO(B3N30): Create the other system archives
 
 # Cleanup
-#rm -rf 3dstool
+rm -rf 3dstool
