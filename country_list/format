@@ -1,0 +1,51 @@
+"$(country_id)_LZ.bin"
+[LZ]{
+    struct {
+        u32 entry_count;
+        
+        struct { // size=0x818
+            struct {
+                u8 zero;
+                u8 zero;
+                u8 region_id;
+                u8 country_id;
+            } address_id;
+            struct {
+                char16_t region_name[0x40]
+            } region_names[0x10];
+            u8 sort_index[0x10];
+            u16 latitude; // 0x0000~0x4000 -> +0~+90; 0xC000~0xFFFF -> -90~-0
+            u16 longitude; // 0x0000~0x8000 -> +0~+180; 0x8000~0xFFFF-> -180~-0
+            
+        } regions[entry_count (+1 for section 0)]
+    } sections[2] // section[1] is the patch section
+    
+    u8 sort index after patching[entry_count_0+1][0x10]
+    some short unknown data follows
+}
+
+"country_LZ.bin"
+[LZ]{
+    struct{
+        u32 entry_count;
+        
+        struct { // size=0x83C
+            struct {
+                u8 zero
+                u8 zero
+                u8 zero
+                u8 country_id;
+            } address_id;
+            u32 region_count;
+            u32 zero;
+            struct {
+                char16_t country_name[0x40]
+            } country_names[0x10];
+            u8 sort_index[0x10];
+            u8 zero_padding[0x20];
+        } country_entries[entry_count];
+    } sections[2]  // section[1] is the patch section
+
+    u8 copy of sort_index[entry_count_0][0x10]
+    some short unknown data follows
+}

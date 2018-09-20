@@ -8,4 +8,4 @@ Currently only the general shared font archive is supported.
 
 ### Building
 
-Requires Python 2.7, pypng, and Python Image Library
+Requires Python 2.7 and 3, pypng, and Python Image Library
