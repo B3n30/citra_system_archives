@@ -10,8 +10,9 @@ import json
 import os
 import shutil
 import sys
+sys.path.append('../')
 import tempfile
-import romfs
+from common import romfs
 
 def loadFromArchive(path):
     result = {}

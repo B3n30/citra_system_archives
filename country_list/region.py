@@ -2,8 +2,10 @@
 # Licensed under GPLv2 or any later version
 # Refer to the license.txt file included.
 
-from lz import decompressFile
-from lz_compress import compressLz
+import sys
+sys.path.append('../')
+from common.lz import decompressFile
+from common.lz_compress import compressLz
 from parse_name import parseName, parseSort, writeName, writeSort
 import os.path
 import io
