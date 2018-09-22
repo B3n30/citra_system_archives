@@ -19,6 +19,10 @@ cd bad_word_list
 ./run.sh
 cd ..
 
+cd country_list
+./run.sh
+cd ..
+
 # TODO(B3N30): Create the other system archives
 
 # Cleanup
