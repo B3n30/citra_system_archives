@@ -46,7 +46,12 @@ def loadRegionFromArchive(archivePath, code):
             sort = parseSort(decompressed)
             assert countries[i]["sort"] == sort
 
-        result["tail"] = " ".join(["{:02X}".format(x) for x in decompressed.read()])
+        tailLen = len(countries) // 32 + 1
+        tail = [struct.unpack('<I', decompressed.read(4))[0] for _ in range(tailLen)]
+        assert len(decompressed.read()) == 0
+        for i in range(len(countries)):
+            countries[i]["eshopLock"] = ((tail[i // 32] >> (i % 32)) & 1) == 1
+
         return result
 
 def writeRegionToArchive(archivePath, region):
@@ -62,7 +67,15 @@ def writeRegionToArchive(archivePath, region):
             file.write(b'\x00' * 0x20)
     for entry in region["countries"]:
         writeSort(file, entry["sort"])
-    file.write(bytes.fromhex(region["tail"]))
+
+    countries = region["countries"]
+    tailLen = len(countries) // 32 + 1
+    tail = [0] * tailLen
+    for i in range(len(countries)):
+        if countries[i]["eshopLock"]:
+            tail[i // 32] |= 1 << (i % 32)
+    for t in tail:
+        file.write(struct.pack('<I', t))
 
     with open(os.path.join(archivePath, region["region"], "country_LZ.bin"), 'wb') as realFile:
         compressLz(file.getvalue(), realFile)
