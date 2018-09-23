@@ -45,11 +45,16 @@ def loadCountryFromArchive(archivePath, code):
                 entryResult["latitude"] = latitude
                 entryResult["longitude"] = longitude
 
-        divisios = result["divisions"]
-        for i in range(len(divisios)):
-            divisios[i]["sortPatch"] = parseSort(decompressed)
+        divisions = result["divisions"]
+        for i in range(len(divisions)):
+            divisions[i]["sortPatch"] = parseSort(decompressed)
 
-        result["tail"] = " ".join(["{:02X}".format(x) for x in decompressed.read()])
+        tailLen = len(divisions) // 32 + 1
+        tail = [struct.unpack('<I', decompressed.read(4))[0] for _ in range(tailLen)]
+        assert len(decompressed.read()) == 0
+        for i in range(len(divisions)):
+            divisions[i]["eshopLock"] = ((tail[i // 32] >> (i % 32)) & 1) == 1
+
         return result
 
 
@@ -70,7 +75,15 @@ def writeCountryToArchive(archivePath, country):
             file.write(struct.pack('<HH', entry["latitude"], entry["longitude"]))
     for entry in country["divisions"]:
         writeSort(file, entry["sortPatch"])
-    file.write(bytes.fromhex(country["tail"]))
+
+    divisions = country["divisions"]
+    tailLen = len(divisions) // 32 + 1
+    tail = [0] * tailLen
+    for i in range(len(divisions)):
+        if divisions[i]["eshopLock"]:
+            tail[i // 32] |= 1 << (i % 32)
+    for t in tail:
+        file.write(struct.pack('<I', t))
 
     path = os.path.join(archivePath, country["region"], "{}_LZ.bin".format(country["code"]))
     with open(path, 'wb') as realFile:
