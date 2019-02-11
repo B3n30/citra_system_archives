@@ -1,0 +1,6 @@
+hat_a_angle=0.0,0.0,0.0
+hat_a_position=0.0,0.0,0.0
+hat_b_angle=0.0,0.0,0.0
+hat_b_position=0.0,0.0,0.0
+hat_c_angle=0.0,0.0,0.0
+hat_c_position=0.0,0.0,0.0

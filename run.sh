@@ -19,11 +19,15 @@ cd bad_word_list
 ./run.sh
 cd ..
 
+# Create the country list
 cd country_list
 ./run.sh
 cd ..
 
-# TODO(B3N30): Create the other system archives
+# Create the mii database
+cd mii
+./run.sh
+cd ..
 
 # Cleanup
 rm -rf 3dstool

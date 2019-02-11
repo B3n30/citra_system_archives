@@ -1,0 +1,5 @@
+width=8
+height=8
+format=2
+wrap_u=2
+wrap_v=0
