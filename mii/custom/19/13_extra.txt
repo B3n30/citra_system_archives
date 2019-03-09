@@ -1,0 +1,5 @@
+width=32
+height=32
+format=10
+wrap_u=0
+wrap_v=0
