@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 '''
 Adapted from https://github.com/magical/nlzss/
 
@@ -25,6 +27,8 @@ THE SOFTWARE.
 from collections import defaultdict
 from operator import itemgetter
 from struct import pack, unpack
+
+import sys
 
 class SlidingWindow:
     # The size of the sliding window
@@ -202,3 +206,24 @@ def compressLz(input, out):
             else:
                 out.write(pack(">B", t))
                 length += 1
+
+def main():
+    def printHelp():
+        print("Usage: {} INPUT OUTPUT".format(sys.argv[0]))
+        exit(-1)
+
+    if len(sys.argv) < 3:
+        printHelp()
+
+    inPath = sys.argv[1]
+    outPath = sys.argv[2]
+
+    i = open(inPath, "rb")
+    ibuf = i.read()
+    i.close()
+    o = open(outPath, "wb")
+    compressLz(ibuf, o)
+    o.close()
+
+if __name__ == "__main__":
+    main()

@@ -11,9 +11,8 @@ python bcfnt.py -cf code.bcfnt
 
 # Convert the bcfnt file into a romfs
 mkdir romfs
-./../3dstool/bin/Release/3dstool -zvf code.bcfnt --compress-type lzex --compress-out romfs/cbf_std.bcfnt.lz
-./../3dstool/bin/Release/3dstool -cvtf romfs romfs.bin --romfs-dir romfs
-dd bs=4096 skip=1 if=romfs.bin of=SHARED_FONT_DATA
+./../common/lz_compress.py code.bcfnt romfs/cbf_std.bcfnt.lz
+./../common/romfs.py -c romfs SHARED_FONT_DATA
 
 # Create a header file to include in citra
 echo -n "// Git Hash: " > shared_font.app.romfs.h
@@ -26,4 +25,3 @@ mv SHARED_FONT_DATA 00000000.app.romfs
 rm -rf romfs
 rm code.bcfnt
 rm code_sheet*
-rm romfs.bin
