@@ -129,12 +129,20 @@ def _compress(input):
     """Generates a stream of tokens. Either a byte (int) or a tuple of (count,
     displacement)."""
 
+    print("Compressing...")
+
     window = SlidingWindow(input)
+
+    percentage = 0
 
     i = 0
     while True:
         if len(input) <= i:
             break
+        new_percentage = int(i / len(input) * 100)
+        if percentage != new_percentage:
+            print("{}%".format(new_percentage))
+            percentage = new_percentage
         match = window.search()
         if match:
             yield match
