@@ -1,28 +1,21 @@
 language: python
 python:
-- '2.7'
-compiler: gcc
+- '3.6'
 dist: trusty
 
 before_install:
-- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-- sudo apt-get update -qq
-- sudo apt-get install -qq g++-6
-- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
-- sudo apt-get install libcurl4-gnutls-dev
-- sudo apt-get install libcurl4-nss-dev
-- sudo apt-get install p7zip p7zip-full p7zip-rar 
+- sudo apt-get install p7zip-full 
 
 install:
-- python --version
-- pip install pillow
-- pip install pypng
+- python3 --version
+- pip3 install pillow
+- pip3 install pypng
 
 script: 
  - bash ./run.sh
 
 after_success: 
-  - bash ./.travis-upload.sh
+ - bash ./.travis-upload.sh
 
 deploy:
   provider: releases

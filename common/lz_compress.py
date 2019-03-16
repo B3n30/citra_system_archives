@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 '''
 Adapted from https://github.com/magical/nlzss/
 
@@ -25,6 +27,8 @@ THE SOFTWARE.
 from collections import defaultdict
 from operator import itemgetter
 from struct import pack, unpack
+
+import sys
 
 class SlidingWindow:
     # The size of the sliding window
@@ -125,12 +129,20 @@ def _compress(input):
     """Generates a stream of tokens. Either a byte (int) or a tuple of (count,
     displacement)."""
 
+    print("Compressing...")
+
     window = SlidingWindow(input)
+
+    percentage = 0
 
     i = 0
     while True:
         if len(input) <= i:
             break
+        new_percentage = int(i / len(input) * 100)
+        if percentage != new_percentage:
+            print("{}%".format(new_percentage))
+            percentage = new_percentage
         match = window.search()
         if match:
             yield match
@@ -202,3 +214,24 @@ def compressLz(input, out):
             else:
                 out.write(pack(">B", t))
                 length += 1
+
+def main():
+    def printHelp():
+        print("Usage: {} INPUT OUTPUT".format(sys.argv[0]))
+        exit(-1)
+
+    if len(sys.argv) < 3:
+        printHelp()
+
+    inPath = sys.argv[1]
+    outPath = sys.argv[2]
+
+    i = open(inPath, "rb")
+    ibuf = i.read()
+    i.close()
+    o = open(outPath, "wb")
+    compressLz(ibuf, o)
+    o.close()
+
+if __name__ == "__main__":
+    main()
