@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
+
 # Copyright 2018 Weiyi Wang
 # Licensed under GPLv2 or any later version
 # Refer to the license.txt file included.
 
 import os
 import struct
+import sys
 
 INVALID = 0xFFFFFFFF
 
@@ -268,3 +271,24 @@ def extractRomfs(f, output_dir):
             file_offset = next_file_offset
 
     extract_dir(0, '')
+
+def main():
+    def printHelp():
+        print("Usage: {} [-x|-c] INPUT OUTPUT".format(sys.argv[0]))
+        exit(-1)
+
+    if len(sys.argv) < 4:
+        printHelp()
+
+    inPath = sys.argv[2]
+    outPath = sys.argv[3]
+
+    if sys.argv[1] == "-x":
+        extractRomfs(inPath, outPath)
+    elif sys.argv[1] == "-c":
+        buildRomfs(inPath, outPath)
+    else:
+        printHelp()
+
+if __name__ == "__main__":
+    main()
