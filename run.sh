@@ -1,22 +1,23 @@
 #!/bin/sh
 
-# Create the Shared Font
+echo "Create the Shared Font..."
 cd shared_font
 ./run.sh
 cd ..
 
-# Create the Bad Word List
+echo "Create the Bad Word List..."
 cd bad_word_list
 ./run.sh
 cd ..
 
-# Create the country list
+echo "Create the country list..."
 cd country_list
 ./run.sh
 cd ..
 
-# Create the mii database
+echo "Create the mii database..."
 cd mii
 ./run.sh
 cd ..
 
+echo "All done"
