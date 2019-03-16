@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # Create the images
-python create_png.py
+./create_png.py
 
 # Copy reserved unicode chars
 cp reserved_unicode_chars/* .
 
 # Create the bcfnt file
-python bcfnt.py -cf code.bcfnt
+./bcfnt.py -cf code.bcfnt
 
 # Convert the bcfnt file into a romfs
 mkdir romfs

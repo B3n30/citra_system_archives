@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 import PIL.Image
 import PIL.ImageDraw
@@ -9,7 +11,7 @@ font = PIL.ImageFont.truetype("Montserrat-Regular.otf", 20)
 chars = dict()
 with open('code_manifest.json','r') as f:
     content = json.loads(f.read().replace('\n', ' '))['glyphMap']
-    chars= {y:x for x,y in content.iteritems()}
+    chars= {y:x for x,y in content.items()}
 
 rows=1
 cols=5

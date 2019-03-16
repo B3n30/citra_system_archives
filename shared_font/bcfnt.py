@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import argparse
 import json
 import math
@@ -21,11 +21,11 @@ TGLP_HEADER_SIZE = 0x20
 CWDH_HEADER_SIZE = 0x10
 CMAP_HEADER_SIZE = 0x14
 
-FFNT_HEADER_MAGIC = 'CFNT'
-FINF_HEADER_MAGIC = 'FINF'
-TGLP_HEADER_MAGIC = 'TGLP'
-CWDH_HEADER_MAGIC = 'CWDH'
-CMAP_HEADER_MAGIC = 'CMAP'
+FFNT_HEADER_MAGIC = b'CFNT'
+FINF_HEADER_MAGIC = b'FINF'
+TGLP_HEADER_MAGIC = b'TGLP'
+CWDH_HEADER_MAGIC = b'CWDH'
+CMAP_HEADER_MAGIC = b'CMAP'
 
 FFNT_HEADER_STRUCT = '=4s2H3I'
 # FINF_HEADER_STRUCT = '%s4sI4B2H4B3I'
@@ -232,8 +232,8 @@ class Bffnt:
         }
 
         widest = 0
-        glyph_indicies = widths.keys()
-        glyph_indicies.sort(self._int_sort)
+        glyph_indicies = list(widths.keys())
+        glyph_indicies.sort(key=self._int_sort)
 
         cwdh['end'] = int(glyph_indicies[-1], 10)
 
@@ -247,7 +247,7 @@ class Bffnt:
         self.cwdh_sections = [cwdh]
 
         glyph_map = json_data['glyphMap']
-        glyph_ords = glyph_map.keys()
+        glyph_ords = list(glyph_map.keys())
         glyph_ords.sort()
         cmap = {
             'start': ord(glyph_ords[0]),
@@ -257,20 +257,14 @@ class Bffnt:
         }
 
         for entry in range(cmap['start'], cmap['end'] + 1):
-            utf16 = unichr(entry)
+            utf16 = chr(entry)
             if utf16 in glyph_map:
                 cmap['entries'][utf16] = glyph_map[utf16]
 
         self.cmap_sections = [cmap]
 
-    def _int_sort(self, x, y):
-        x = int(x, 10)
-        y = int(y, 10)
-        if x < y:
-            return -1
-        if x > y:
-            return 1
-        return 0
+    def _int_sort(self, x):
+        return int(x, 10)
 
     def extract(self):
         basename_ = os.path.splitext(os.path.basename(self.filename))[0]
@@ -284,12 +278,12 @@ class Bffnt:
         for cmap in self.cmap_sections:
             if cmap['type'] == MAPPING_DIRECT:
                 for code in range(cmap['start'], cmap['end']):
-                    glyph_mapping[unichr(code)] = code - cmap['start'] + cmap['indexOffset']
+                    glyph_mapping[chr(code)] = code - cmap['start'] + cmap['indexOffset']
             elif cmap['type'] == MAPPING_TABLE:
                 for code in range(cmap['start'], cmap['end']):
                     index = cmap['indexTable'][code - cmap['start']]
                     if index != 0xFFFF:
-                        glyph_mapping[unichr(code)] = index
+                        glyph_mapping[chr(code)] = index
             elif cmap['type'] == MAPPING_SCAN:
                 for code in cmap['entries'].keys():
                     glyph_mapping[code] = cmap['entries'][code]
@@ -411,7 +405,7 @@ class Bffnt:
 
             bmp = []
             for row in list(pixels):
-                for pixel in range(len(row) / 4):
+                for pixel in range(len(row) // 4):
                     bmp.append(row[pixel * 4:pixel * 4 + 4])
             data = self._sheet_to_bitmap(bmp, to_tglp=True)
             file_.write(data)
@@ -488,7 +482,7 @@ class Bffnt:
                     file_.write(struct.pack('%sH' % self.order, index))
                     position += 2
             elif cmap['type'] == MAPPING_SCAN:
-                keys = cmap['entries'].keys()
+                keys = list(cmap['entries'].keys())
                 keys.sort()
                 for code in keys:
                     index = cmap['entries'][code]
@@ -816,8 +810,8 @@ class Bffnt:
             # initialize empty bitmap memory (RGBA8)
             bmp = [[0, 0, 0, 0]] * (width * height)
 
-        tile_width = width / 8
-        tile_height = height / 8
+        tile_width = width // 8
+        tile_height = height // 8
 
         # sheet is composed of 8x8 pixel tiles
         for tile_y in range(tile_height):
@@ -858,7 +852,7 @@ class Bffnt:
                                                 data[data_pos:data_pos + len(bytes_)] = bytes_
                                             else:
                                                 if PIXEL_FORMAT_SIZE[format_] == 4:
-                                                    data_pos /= 2
+                                                    data_pos //= 2
                                                 data[data_pos] |= bytes_[0]
                                         else:
                                             bmp[bmp_pos] = self._get_pixel_data(data, format_, data_pos)
@@ -935,14 +929,14 @@ class Bffnt:
 
         # llll
         elif format_ == FORMAT_L4:
-            l = struct.unpack('B', data[index / 2])[0]
+            l = struct.unpack('B', data[index // 2])[0]
             shift = (index & 1) * 4
             red = green = blue = ((l >> shift) & 0x0F) * 0x11
             alpha = 255
 
         # aaaa
         elif format_ == FORMAT_A4:
-            byte = ord(data[index / 2])
+            byte = ord(data[index // 2])
             shift = (index & 1) * 4
             alpha = ((byte >> shift) & 0x0F) * 0x11
             green = red = blue = 0xFF
@@ -962,9 +956,9 @@ class Bffnt:
 
         # rrrrrggg ggbbbbba
         elif format_ == FORMAT_RGBA5551:
-            r5 = (red / 8) & 0x1F
-            g5 = (green / 8) & 0x1F
-            b5 = (blue / 8) & 0x1F
+            r5 = (red // 8) & 0x1F
+            g5 = (green // 8) & 0x1F
+            b5 = (blue // 8) & 0x1F
             a = 1 if alpha > 0 else 0
 
             b1 = (r5 << 3) | (g5 >> 2)
@@ -973,9 +967,9 @@ class Bffnt:
 
         # rrrrrggg gggbbbbb
         elif format_ == FORMAT_RGB565:
-            r5 = (red / 8) & 0x1F
-            g6 = (green / 4) & 0x3F
-            b5 = (blue / 8) & 0x1F
+            r5 = (red // 8) & 0x1F
+            g6 = (green // 4) & 0x3F
+            b5 = (blue // 8) & 0x1F
 
             b1 = (r5 << 3) | (g6 >> 3)
             b2 = ((g6 << 5) | b5) & 0xFF
@@ -983,10 +977,10 @@ class Bffnt:
 
         # rrrrgggg bbbbaaaa
         elif format_ == FORMAT_RGBA4:
-            r4 = (red / 0x11) & 0x0F
-            g4 = (green / 0x11) & 0x0F
-            b4 = (blue / 0x11) & 0x0F
-            a4 = (alpha / 0x11) & 0x0F
+            r4 = (red // 0x11) & 0x0F
+            g4 = (green // 0x11) & 0x0F
+            b4 = (blue // 0x11) & 0x0F
+            a4 = (alpha // 0x11) & 0x0F
 
             b1 = (r4 << 4) | g4
             b2 = (b4 << 4) | a4
@@ -1014,8 +1008,8 @@ class Bffnt:
 
         # llllaaaa
         elif format_ == FORMAT_LA4:
-            l = int((red * 0.2126) + (green * 0.7152) + (blue * 0.0722)) / 0x11
-            a = (alpha / 0x11) & 0x0F
+            l = int((red * 0.2126) + (green * 0.7152) + (blue * 0.0722)) // 0x11
+            a = (alpha // 0x11) & 0x0F
 
             b = (l << 4) | a
             return [b]
@@ -1028,7 +1022,7 @@ class Bffnt:
 
         # aaaa
         elif format_ == FORMAT_A4:
-            alpha = (bmp[index][3] / 0x11) & 0xF
+            alpha = (bmp[index][3] // 0x11) & 0xF
             shift = (index & 1) * 4
             return [alpha << shift]
 
@@ -1119,7 +1113,7 @@ class Bffnt:
             for i in range(count):
                 code, offset = struct.unpack('%s2H' % self.order, data[position:position + 4])
                 position += 4
-                output[unichr(code)] = offset
+                output[chr(code)] = offset
             info['entries'] = output
 
 
@@ -1129,7 +1123,7 @@ def prompt_yes_no(prompt):
         if answer_ is not None:
             print('Please answer "y" or "n"')
 
-        answer_ = raw_input(prompt).lower()
+        answer_ = input(prompt).lower()
 
         if len(answer_) == 0:
             answer_ = 'n'
